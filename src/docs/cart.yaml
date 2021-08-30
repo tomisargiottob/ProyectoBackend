@@ -64,28 +64,6 @@ instance:
         $ref: './errors.yaml#/404'
       '500':
         $ref: './errors.yaml#/500'
-  put:
-    summary: Update one cart
-    operationId: updateCart
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-    responses:
-      '200':
-        description: Updated
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Cart'
-      '401':
-        $ref: './errors.yaml#/401'
-      '404':
-        $ref: './errors.yaml#/404'
-      '500':
-        $ref: './errors.yaml#/500'
 
   delete:
     summary: Delete one cart
@@ -155,7 +133,7 @@ products:
           type: string
     responses:
       '200':
-        description: Deleted
+        description: Added
         content:
           application/json:
             schema:
@@ -178,11 +156,6 @@ products:
     operationId: getCartProduct
     parameters:
       - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-      - name: id_prod
         in: path
         required: true
         schema:

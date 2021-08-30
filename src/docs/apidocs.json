@@ -887,138 +887,6 @@
           }
         }
       },
-      "put": {
-        "summary": "Update one cart",
-        "operationId": "updateCart",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "number"
-                    },
-                    "products": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "timestamp": {
-                            "type": "number"
-                          },
-                          "name": {
-                            "type": "string"
-                          },
-                          "description": {
-                            "type": "string"
-                          },
-                          "code": {
-                            "type": "string"
-                          },
-                          "thumbnail": {
-                            "type": "string"
-                          },
-                          "price": {
-                            "type": "number"
-                          },
-                          "stock": {
-                            "type": "number"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "number"
-                    }
-                  },
-                  "default": {
-                    "message": "Not authorized for the request",
-                    "code": 401
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "number"
-                    }
-                  },
-                  "default": {
-                    "message": "Object not found in database",
-                    "code": 404
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "number"
-                    }
-                  },
-                  "default": {
-                    "message": "Server encountered a problem",
-                    "code": 500
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
       "delete": {
         "summary": "Delete one cart",
         "operationId": "deleteCart",
@@ -1316,7 +1184,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Deleted",
+            "description": "Added",
             "content": {
               "application/json": {
                 "schema": {
@@ -1433,14 +1301,6 @@
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id_prod",
             "in": "path",
             "required": true,
             "schema": {

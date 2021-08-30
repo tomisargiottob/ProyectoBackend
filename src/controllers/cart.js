@@ -36,7 +36,7 @@ cartsRouter.delete('/:id', async (req, res) => {
   }
 });
 
-cartsRouter.post('/:id/products/:idProd', async (req, res) => {
+cartsRouter.get('/:id/products', async (req, res) => {
   const { id } = req.params;
   try {
     const cart = await carts.get(id);
