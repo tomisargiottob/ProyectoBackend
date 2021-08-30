@@ -1,0 +1,20 @@
+[
+  {
+    "name": "sprite",
+    "description": "gaseosa",
+    "code": "aaa-111",
+    "thumbnail": "www.sprite.com",
+    "price": 10,
+    "stock": 1000,
+    "id": "3dff3a58-c808-4cc1-9f08-035519694812"
+  },
+  {
+    "name": "coca",
+    "description": "gaseosa",
+    "code": "aaa-111",
+    "thumbnail": "www.cocacola.com",
+    "price": 10,
+    "stock": 1000,
+    "id": "8df8800d-260d-4c08-b3e3-5ca954da22c4"
+  }
+]

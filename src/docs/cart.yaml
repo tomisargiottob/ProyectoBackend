@@ -1,0 +1,223 @@
+collection:
+  get:
+    summary: Get all carts
+    operationId: getCarts
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Cart'
+      '401':
+        $ref: './errors.yaml#/401'
+      '500':
+        $ref: './errors.yaml#/500'
+  post:
+    summary: Add a new cart
+    operationId: createCart
+    requestBody:
+      description: Cart created for client
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+    responses:
+      '200':
+        description: Created
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: 
+                  type: string
+      '401':
+        $ref: './errors.yaml#/401'
+      '500':
+        $ref: './errors.yaml#/500'
+        
+      
+instance:
+  get:
+    summary: Get one cart
+    operationId: getCart
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+  put:
+    summary: Update one cart
+    operationId: updateCart
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+  delete:
+    summary: Delete one cart
+    operationId: deleteCart
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Deleted
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+products:
+  delete:
+    summary: Delete one product of a cart
+    operationId: deleteCartProduct
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_prod
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Deleted
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cart'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+  post:
+    summary: Add one product of a cart
+    operationId: addCartProduct
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_prod
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Deleted
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    $ref: ./products.yaml#/components/schemas/Product
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+  get:
+    summary: Get products of a cart
+    operationId: getCartProduct
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_prod
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: All products
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    $ref: ./products.yaml#/components/schemas/Product
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+components:
+  schemas: 
+    Cart: 
+      type: object
+      properties: 
+        id: 
+          type: string
+        timestamp: 
+          type: number
+        products:
+          type: array
+          items:
+            type: object
+            $ref: ./products.yaml#/components/schemas/Product
