@@ -85,6 +85,28 @@ instance:
         required: true
         schema:
           type: string
+    requestBody:
+      description: Product to add to the store
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              code:
+                type: string
+              thumbnail:
+                type: string
+              price:
+                type: number
+              stock:
+                type: number
     responses:
       '200':
         description: Updated

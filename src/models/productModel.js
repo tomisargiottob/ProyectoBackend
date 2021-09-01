@@ -28,8 +28,9 @@ class Product {
     }
   }
 
-  getById(id) {
-    const document = this.fileInfo.filter((doc) => doc.id === id);
+  async getById(id) {
+    this.fileInfo = fs.readFileSync(this.archivo, 'utf-8');
+    const document = JSON.parse(this.fileInfo).filter((doc) => doc.id === id);
     if (document) {
       return document;
     }

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "b7b84615-7f39-4ac1-a0c2-3ee94b556d26",
+    "timestamp": 1630428170284,
+    "products": [
+      {
+        "name": "coca",
+        "description": "gaseosa",
+        "code": "aaa-111",
+        "thumbnail": "www.coca.com.ar",
+        "price": 100,
+        "stock": 10000,
+        "id": "58f77840-18c0-42b4-8270-bf33ce538379",
+        "timestamp": 1630424033956,
+        "amount": 20
+      }
+    ]
+  }
+]

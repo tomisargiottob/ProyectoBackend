@@ -1,20 +1,21 @@
 [
   {
-    "name": "sprite",
-    "description": "gaseosa",
-    "code": "aaa-111",
-    "thumbnail": "www.sprite.com",
-    "price": 10,
-    "stock": 1000,
-    "id": "3dff3a58-c808-4cc1-9f08-035519694812"
-  },
-  {
     "name": "coca",
     "description": "gaseosa",
     "code": "aaa-111",
-    "thumbnail": "www.cocacola.com",
-    "price": 10,
-    "stock": 1000,
-    "id": "8df8800d-260d-4c08-b3e3-5ca954da22c4"
+    "thumbnail": "www.coca.com.ar",
+    "price": 100,
+    "stock": 10000,
+    "id": "58f77840-18c0-42b4-8270-bf33ce538379",
+    "timestamp": 1630424033956
+  },
+  {
+    "name": "coca",
+    "description": "la mejor gaseosa",
+    "code": "aaa-111",
+    "thumbnail": "www.cocacola.com.ar",
+    "price": 100,
+    "stock": 10000,
+    "id": "1f47154f-707b-4d78-9bf7-70b0aa76661a"
   }
 ]

@@ -39,7 +39,7 @@ cartsRouter.delete('/:id', async (req, res) => {
 cartsRouter.get('/:id/products', async (req, res) => {
   const { id } = req.params;
   try {
-    const cart = await carts.get(id);
+    const cart = await carts.getById(id);
     res.status(200).send({ products: cart.products });
   } catch {
     res.status(404).send(`There is no cart with the id ${id}`);
@@ -48,13 +48,35 @@ cartsRouter.get('/:id/products', async (req, res) => {
 
 cartsRouter.post('/:id/products/:idProd', async (req, res) => {
   const { id, idProd } = req.params;
+  const { amount } = req.body;
   try {
-    const cart = await carts.get(id);
-    cart.products.push(products.getById(idProd));
+    const cart = await carts.getById(id);
+    let product = cart.products.filter((element) => element.id === idProd);
+    if (!product.length) {
+      product = await products.getById(idProd);
+      product[0].amount = amount;
+      cart.products.push(product[0]);
+    } else {
+      product[0].amount += amount;
+    }
     carts.update(id, cart);
     res.status(200).send({ cart });
-  } catch {
-    res.status(404).send(`There is no cart with the id ${id}`);
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+
+cartsRouter.put('/:id/products/:idProd', async (req, res) => {
+  const { id, idProd } = req.params;
+  const { amount } = req.body;
+  try {
+    const cart = await carts.getById(id);
+    const product = cart.products.find((element) => element.id === idProd);
+    product.amount = amount;
+    carts.update(id, cart);
+    res.status(200).send({ cart });
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 

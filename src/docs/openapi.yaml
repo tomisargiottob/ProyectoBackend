@@ -12,5 +12,7 @@ paths:
     $ref: cart.yaml#/collection
   /api/carts/{id}:
     $ref: cart.yaml#/instance
+  /api/carts/{id}/products:
+    $ref: cart.yaml#/cartproducts
   /api/carts/{id}/products/{idProd}:
     $ref: cart.yaml#/products    

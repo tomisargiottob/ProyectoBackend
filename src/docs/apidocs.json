@@ -349,6 +349,40 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Product to add to the store",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  },
+                  "thumbnail": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "stock": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Updated",
@@ -680,17 +714,6 @@
       "post": {
         "summary": "Add a new cart",
         "operationId": "createCart",
-        "requestBody": {
-          "description": "Cart created for client",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Created",
@@ -1020,21 +1043,13 @@
         }
       }
     },
-    "/api/carts/{id}/products/{idProd}": {
-      "delete": {
-        "summary": "Delete one product of a cart",
-        "operationId": "deleteCartProduct",
+    "/api/carts/{id}/products": {
+      "get": {
+        "summary": "Get products of a cart",
+        "operationId": "getCartProduct",
         "parameters": [
           {
             "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id_prod",
             "in": "path",
             "required": true,
             "schema": {
@@ -1044,18 +1059,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Deleted",
+            "description": "All products",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "products": {
                       "type": "array",
                       "items": {
@@ -1160,7 +1169,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/carts/{id}/products/{idProd}": {
       "post": {
         "summary": "Add one product of a cart",
         "operationId": "addCartProduct",
@@ -1174,7 +1185,7 @@
             }
           },
           {
-            "name": "id_prod",
+            "name": "idProd",
             "in": "path",
             "required": true,
             "schema": {
@@ -1182,6 +1193,25 @@
             }
           }
         ],
+        "requestBody": {
+          "description": "Product to add to the cart",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "amount"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Added",
@@ -1295,12 +1325,176 @@
           }
         }
       },
-      "get": {
-        "summary": "Get products of a cart",
-        "operationId": "getCartProduct",
+      "put": {
+        "summary": "Change amount of one product of a cart",
+        "operationId": "updateCartProduct",
         "parameters": [
           {
             "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idProd",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Product to add to the cart",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "amount"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "timestamp": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "thumbnail": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number"
+                          },
+                          "stock": {
+                            "type": "number"
+                          },
+                          "ammount": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  },
+                  "default": {
+                    "message": "Not authorized for the request",
+                    "code": 401
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  },
+                  "default": {
+                    "message": "Object not found in database",
+                    "code": 404
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  },
+                  "default": {
+                    "message": "Server encountered a problem",
+                    "code": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete one product of a cart",
+        "operationId": "deleteCartProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "idProd",
             "in": "path",
             "required": true,
             "schema": {
@@ -1310,12 +1504,18 @@
         ],
         "responses": {
           "200": {
-            "description": "All products",
+            "description": "Deleted",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "number"
+                    },
                     "products": {
                       "type": "array",
                       "items": {

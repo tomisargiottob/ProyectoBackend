@@ -20,6 +20,7 @@ class Cart {
       }
       element.id = uuid();
       element.timestamp = Date.now();
+      element.products = [];
       this.fileInfo.push(element);
       await fs.promises.writeFile(this.archivo, JSON.stringify(this.fileInfo, null, 2));
       console.log('guardado');
@@ -30,8 +31,8 @@ class Cart {
 
   getById(id) {
     const document = this.fileInfo.filter((doc) => doc.id === id);
-    if (document) {
-      return document;
+    if (document.length) {
+      return document[0];
     }
     return new Error('Not found');
   }
