@@ -5,6 +5,7 @@ const productsRouter = new Router();
 const products = new Contenedor('products.json');
 
 productsRouter.get('', (req, res) => {
+  console.log(req.headers);
   res.status(200).send(products.getAll());
 });
 
@@ -20,16 +21,22 @@ productsRouter.get('/:id', (req, res) => {
 
 productsRouter.post('', async (req, res) => {
   const product = req.body;
-  await products.save(product);
-  res.status(200).send({ product });
+  if (req.headers.authorization) {
+    await products.save(product);
+    res.status(200).send({ product });
+  }
+  res.status(401).send({ code: 401, message: 'user not authorized' });
 });
 
 productsRouter.put('/:id', async (req, res) => {
   const { id } = req.params;
   const data = req.body;
   try {
-    const product = await products.update(id, data);
-    res.status(200).send({ product });
+    if (req.headers.authorization) {
+      const product = await products.update(id, data);
+      res.status(200).send({ product });
+    }
+    res.status(401).send({ code: 401, message: 'user not authorized' });
   } catch {
     res.status(404).send(`There is no product with the id ${id}`);
   }
@@ -38,8 +45,11 @@ productsRouter.put('/:id', async (req, res) => {
 productsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await products.deleteById(id);
-    res.status(200).send({ product });
+    if (req.headers.authorization) {
+      const product = await products.deleteById(id);
+      res.status(200).send({ product });
+    }
+    res.status(401).send({ code: 401, message: 'user not authorized' });
   } catch {
     res.status(404).send(`There is no product with the id ${id}`);
   }

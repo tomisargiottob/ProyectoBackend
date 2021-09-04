@@ -17,5 +17,35 @@
     "price": 100,
     "stock": 10000,
     "id": "1f47154f-707b-4d78-9bf7-70b0aa76661a"
+  },
+  {
+    "name": "sprite",
+    "description": "la mejor",
+    "code": "aaa-112",
+    "thumbnail": "www.sprite.com",
+    "price": 10,
+    "stock": 30,
+    "id": "7730530b-c9e7-446c-b0f4-a7ad0584c553",
+    "timestamp": 1630770329097
+  },
+  {
+    "name": "sprite",
+    "description": "limonada",
+    "code": "aaa-112",
+    "thumbnail": "www.sprite.com",
+    "price": 10,
+    "stock": 100,
+    "id": "ee781679-3bd7-4851-a61f-a6bff6c136a1",
+    "timestamp": 1630770428002
+  },
+  {
+    "name": "sprite",
+    "description": "limonada",
+    "code": "aaa-112",
+    "thumbnail": "www.sprite.com",
+    "price": 10,
+    "stock": 100,
+    "id": "43d3d205-426f-472a-ad3a-528f9ffb66c7",
+    "timestamp": 1630770674407
   }
 ]

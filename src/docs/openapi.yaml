@@ -16,3 +16,12 @@ paths:
     $ref: cart.yaml#/cartproducts
   /api/carts/{id}/products/{idProd}:
     $ref: cart.yaml#/products    
+
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+
+security:
+  - BasicAuth: []

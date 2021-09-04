@@ -7,7 +7,10 @@ const carts = new Cart('carts.json');
 const products = new Product('products.json');
 
 cartsRouter.get('', (req, res) => {
-  res.status(200).send(carts.getAll());
+  if (req.headers.authorization) {
+    res.status(200).send(carts.getAll());
+  }
+  res.status(401).send({ code: 401, message: 'user not authorized' });
 });
 
 cartsRouter.get('/:id', (req, res) => {
@@ -29,8 +32,11 @@ cartsRouter.post('', async (req, res) => {
 cartsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const cart = await carts.deleteById(id);
-    res.status(200).send({ cart });
+    if (req.headers.authorization) {
+      const cart = await carts.deleteById(id);
+      res.status(200).send({ cart });
+    }
+    res.status(401).send({ code: 401, message: 'user not authorized' });
   } catch {
     res.status(404).send(`There is no cart with the id ${id}`);
   }
