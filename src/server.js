@@ -4,6 +4,8 @@ const swaggerUI = require('swagger-ui-express');
 const log = require('simple-node-logger').createSimpleLogger({
   timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS',
 });
+// eslint-disable-next-line no-unused-vars
+const db = require('./models/db');
 const swaggerDocument = require('./docs/apidocs.json');
 const { productsRouter } = require('./controllers/products');
 const { cartsRouter } = require('./controllers/cart');

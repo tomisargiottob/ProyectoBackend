@@ -150,8 +150,6 @@ components:
       properties: 
         id: 
           type: string
-        timestamp: 
-          type: number
         name:
           type: string
         description:

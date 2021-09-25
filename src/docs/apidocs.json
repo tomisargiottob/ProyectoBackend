@@ -23,9 +23,6 @@
                       "id": {
                         "type": "string"
                       },
-                      "timestamp": {
-                        "type": "number"
-                      },
                       "name": {
                         "type": "string"
                       },
@@ -144,9 +141,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "name": {
                       "type": "string"
                     },
@@ -241,9 +235,6 @@
                   "properties": {
                     "id": {
                       "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "number"
                     },
                     "name": {
                       "type": "string"
@@ -394,9 +385,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "name": {
                       "type": "string"
                     },
@@ -511,9 +499,6 @@
                   "properties": {
                     "id": {
                       "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "number"
                     },
                     "name": {
                       "type": "string"
@@ -635,9 +620,6 @@
                             "id": {
                               "type": "string"
                             },
-                            "timestamp": {
-                              "type": "number"
-                            },
                             "name": {
                               "type": "string"
                             },
@@ -716,19 +698,7 @@
         "operationId": "createCart",
         "responses": {
           "200": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Created"
           },
           "401": {
             "description": "Unauthorized",
@@ -812,9 +782,6 @@
                         "properties": {
                           "id": {
                             "type": "string"
-                          },
-                          "timestamp": {
-                            "type": "number"
                           },
                           "name": {
                             "type": "string"
@@ -945,9 +912,6 @@
                           "id": {
                             "type": "string"
                           },
-                          "timestamp": {
-                            "type": "number"
-                          },
                           "name": {
                             "type": "string"
                           },
@@ -1072,9 +1036,6 @@
                         "properties": {
                           "id": {
                             "type": "string"
-                          },
-                          "timestamp": {
-                            "type": "number"
                           },
                           "name": {
                             "type": "string"
@@ -1227,9 +1188,6 @@
                         "properties": {
                           "id": {
                             "type": "string"
-                          },
-                          "timestamp": {
-                            "type": "number"
                           },
                           "name": {
                             "type": "string"
@@ -1523,9 +1481,6 @@
                         "properties": {
                           "id": {
                             "type": "string"
-                          },
-                          "timestamp": {
-                            "type": "number"
                           },
                           "name": {
                             "type": "string"

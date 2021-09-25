@@ -1,31 +1,43 @@
 const { Router } = require('express');
-const Contenedor = require('../models/productModel');
+const Product = require('../models/product-model');
 
 const productsRouter = new Router();
-const products = new Contenedor('products.json');
 
-productsRouter.get('', (req, res) => {
-  console.log(req.headers);
-  res.status(200).send(products.getAll());
+productsRouter.get('', async (req, res) => {
+  try {
+    const todosProductos = await Product.find();
+    res.status(200).send(todosProductos);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 });
 
-productsRouter.get('/:id', (req, res) => {
+productsRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const foundProduct = products.getById(id);
-    res.status(200).send(foundProduct);
-  } catch {
-    res.status(404).send(`There is no product with the id ${id}`);
+    const foundProduct = await Product.findOne({ _id: id });
+    if (foundProduct) {
+      res.status(200).send(foundProduct);
+    } else {
+      res.status(404).send({ code: 404, message: `Product with id ${id} does not exist` });
+    }
+  } catch (err) {
+    res.status(500).send({ message: err.message });
   }
 });
 
 productsRouter.post('', async (req, res) => {
   const product = req.body;
   if (req.headers.authorization) {
-    await products.save(product);
-    res.status(200).send({ product });
+    try {
+      const newProduct = await Product.create(product);
+      res.status(200).send({ newProduct });
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  } else {
+    res.status(401).send({ code: 401, message: 'user not authorized' });
   }
-  res.status(401).send({ code: 401, message: 'user not authorized' });
 });
 
 productsRouter.put('/:id', async (req, res) => {
@@ -33,12 +45,17 @@ productsRouter.put('/:id', async (req, res) => {
   const data = req.body;
   try {
     if (req.headers.authorization) {
-      const product = await products.update(id, data);
-      res.status(200).send({ product });
+      const product = await Product.findOneAndUpdate({ _id: id }, data, { new: true });
+      if (product) {
+        res.status(200).send({ product });
+      } else {
+        res.status(404).send({ code: 404, message: `Product with id ${id} does not exist` });
+      }
+    } else {
+      res.status(401).send({ code: 401, message: 'user not authorized' });
     }
-    res.status(401).send({ code: 401, message: 'user not authorized' });
-  } catch {
-    res.status(404).send(`There is no product with the id ${id}`);
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
@@ -46,13 +63,18 @@ productsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     if (req.headers.authorization) {
-      const product = await products.deleteById(id);
-      res.status(200).send({ product });
+      const product = await Product.deleteOne({ _id: id });
+      if (product.n) {
+        res.status(200).send({ product });
+      } else {
+        res.status(404).send({ code: 404, message: `Product with id ${id} does not exist` });
+      }
+    } else {
+      res.status(401).send({ code: 401, message: 'user not authorized' });
     }
-    res.status(401).send({ code: 401, message: 'user not authorized' });
-  } catch {
-    res.status(404).send(`There is no product with the id ${id}`);
+  } catch (err) {
+    res.status(404).send({ code: 500, message: err.message });
   }
 });
 
-module.exports = { products, productsRouter };
+module.exports = { productsRouter };

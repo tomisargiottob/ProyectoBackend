@@ -1,54 +1,75 @@
 const { Router } = require('express');
-const Cart = require('../models/cartModel');
-const Product = require('../models/productModel');
+const Cart = require('../models/cart-model');
+const Product = require('../models/product-model');
 
 const cartsRouter = new Router();
-const carts = new Cart('carts.json');
-const products = new Product('products.json');
 
-cartsRouter.get('', (req, res) => {
-  if (req.headers.authorization) {
-    res.status(200).send(carts.getAll());
+cartsRouter.get('', async (req, res) => {
+  try {
+    if (req.headers.authorization) {
+      const carts = await Cart.find();
+      res.status(200).send(carts);
+    } else {
+      res.status(401).send({ code: 401, message: 'user not authorized' });
+    }
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
-  res.status(401).send({ code: 401, message: 'user not authorized' });
 });
 
-cartsRouter.get('/:id', (req, res) => {
+cartsRouter.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const foundCart = carts.getById(id);
-    res.status(200).send(foundCart);
-  } catch {
-    res.status(404).send(`There is no cart with the id ${id}`);
+    const foundCart = await Cart.findOne({ _id: id });
+    if (foundCart) {
+      res.status(200).send(foundCart);
+    } else {
+      res.status(404).send({ code: 404, message: `There is no cart with the id ${id}` });
+    }
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
 cartsRouter.post('', async (req, res) => {
   const cart = req.body;
-  await carts.save(cart);
-  res.status(200).send({ cart });
+  try {
+    const createdCart = await Cart.create(cart);
+    res.status(200).send({ createdCart });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 });
 
 cartsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     if (req.headers.authorization) {
-      const cart = await carts.deleteById(id);
-      res.status(200).send({ cart });
+      const cart = await Cart.deleteOne({ _id: id });
+      if (cart.n) {
+        res.status(200).send({ cart });
+      } else {
+        res.status(404).send({ code: 404, message: `Cart with id ${id} does not exist` });
+      }
+    } else {
+      res.status(401).send({ code: 401, message: 'user not authorized' });
     }
-    res.status(401).send({ code: 401, message: 'user not authorized' });
-  } catch {
-    res.status(404).send(`There is no cart with the id ${id}`);
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
 cartsRouter.get('/:id/products', async (req, res) => {
   const { id } = req.params;
   try {
-    const cart = await carts.getById(id);
-    res.status(200).send({ products: cart.products });
-  } catch {
-    res.status(404).send(`There is no cart with the id ${id}`);
+    const foundCart = await Cart.findOne({ _id: id });
+    if (foundCart) {
+      res.status(200).send({ products: foundCart.products });
+    } else {
+      res.status(404).send({ code: 404, message: `There is no cart with the id ${id}` });
+    }
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
@@ -56,19 +77,24 @@ cartsRouter.post('/:id/products/:idProd', async (req, res) => {
   const { id, idProd } = req.params;
   const { amount } = req.body;
   try {
-    const cart = await carts.getById(id);
-    let product = cart.products.filter((element) => element.id === idProd);
-    if (!product.length) {
-      product = await products.getById(idProd);
-      product[0].amount = amount;
-      cart.products.push(product[0]);
+    const foundCart = await Cart.findOne({ _id: id });
+    if (foundCart) {
+      // eslint-disable-next-line
+      let product = foundCart.products.find((element) => element._id == idProd);
+      if (!product) {
+        product = JSON.parse(JSON.stringify(await Product.findOne({ _id: idProd })));
+        product.amount = amount;
+        foundCart.products.push(product);
+      } else {
+        product.amount += amount;
+      }
+      const updatedCart = await Cart.findOneAndUpdate({ _id: id }, foundCart, { new: true });
+      res.status(200).send({ cart: updatedCart });
     } else {
-      product[0].amount += amount;
+      res.status(404).send({ code: 404, message: `There is no cart with the id ${id}` });
     }
-    carts.update(id, cart);
-    res.status(200).send({ cart });
   } catch (err) {
-    res.status(404).send(err);
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
@@ -76,26 +102,40 @@ cartsRouter.put('/:id/products/:idProd', async (req, res) => {
   const { id, idProd } = req.params;
   const { amount } = req.body;
   try {
-    const cart = await carts.getById(id);
-    const product = cart.products.find((element) => element.id === idProd);
-    product.amount = amount;
-    carts.update(id, cart);
-    res.status(200).send({ cart });
+    const foundCart = await Cart.findOne({ _id: id });
+    if (foundCart) {
+      // eslint-disable-next-line
+      const product = foundCart.products.find((element) => element._id == idProd);
+      if (product) {
+        product.amount = amount;
+        await Cart.findOneAndUpdate({ _id: id }, foundCart, { new: true });
+        res.status(200).send({ foundCart });
+      } else {
+        res.status(404).send({ code: 404, message: `There is no product with the id ${idProd} in the cart` });
+      }
+    } else {
+      res.status(404).send({ code: 404, message: `There is no cart with the id ${id}` });
+    }
   } catch (err) {
-    res.status(404).send(err);
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
 cartsRouter.delete('/:id/products/:idProd', async (req, res) => {
   const { id, idProd } = req.params;
   try {
-    const cart = carts.getById(id);
-    cart.products = cart.products.filter((product) => product.id !== idProd);
-    carts.update(id, cart);
-    res.status(200).send({ cart });
-  } catch {
-    res.status(404).send(`There is no cart with the id ${id}`);
+    const cart = await Cart.findOne({ _id: id });
+    if (cart) {
+      // eslint-disable-next-line
+      cart.products = cart.products.filter((product) => product._id != idProd);
+      const updatedCart = await Cart.findOneAndUpdate({ _id: id }, cart, { new: true });
+      res.status(200).send({ cart: updatedCart });
+    } else {
+      res.status(404).send({ code: 404, message: `There is no cart with the id ${id}` });
+    }
+  } catch (err) {
+    res.status(500).send({ code: 500, message: err.message });
   }
 });
 
-module.exports = { carts, cartsRouter };
+module.exports = { cartsRouter };
