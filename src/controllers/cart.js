@@ -1,10 +1,11 @@
 const { Router } = require('express');
 const Cart = require('../models/cart-model');
 const Product = require('../models/product-model');
+const checkAuthenticated = require('../middleware/auth.middleware');
 
 const cartsRouter = new Router();
 
-cartsRouter.get('', async (req, res) => {
+cartsRouter.get('', checkAuthenticated, async (req, res) => {
   try {
     if (req.headers.authorization) {
       const carts = await Cart.find();
@@ -17,7 +18,7 @@ cartsRouter.get('', async (req, res) => {
   }
 });
 
-cartsRouter.get('/:id', async (req, res) => {
+cartsRouter.get('/:id', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
     const foundCart = await Cart.findOne({ _id: id });
@@ -31,7 +32,7 @@ cartsRouter.get('/:id', async (req, res) => {
   }
 });
 
-cartsRouter.post('', async (req, res) => {
+cartsRouter.post('', checkAuthenticated, async (req, res) => {
   const cart = req.body;
   try {
     const createdCart = await Cart.create(cart);
@@ -41,7 +42,7 @@ cartsRouter.post('', async (req, res) => {
   }
 });
 
-cartsRouter.delete('/:id', async (req, res) => {
+cartsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
     if (req.headers.authorization) {
@@ -59,7 +60,7 @@ cartsRouter.delete('/:id', async (req, res) => {
   }
 });
 
-cartsRouter.get('/:id/products', async (req, res) => {
+cartsRouter.get('/:id/products', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
     const foundCart = await Cart.findOne({ _id: id });
@@ -73,7 +74,7 @@ cartsRouter.get('/:id/products', async (req, res) => {
   }
 });
 
-cartsRouter.post('/:id/products/:idProd', async (req, res) => {
+cartsRouter.post('/:id/products/:idProd', checkAuthenticated, async (req, res) => {
   const { id, idProd } = req.params;
   const { amount } = req.body;
   try {
@@ -98,7 +99,7 @@ cartsRouter.post('/:id/products/:idProd', async (req, res) => {
   }
 });
 
-cartsRouter.put('/:id/products/:idProd', async (req, res) => {
+cartsRouter.put('/:id/products/:idProd', checkAuthenticated, async (req, res) => {
   const { id, idProd } = req.params;
   const { amount } = req.body;
   try {
@@ -121,7 +122,7 @@ cartsRouter.put('/:id/products/:idProd', async (req, res) => {
   }
 });
 
-cartsRouter.delete('/:id/products/:idProd', async (req, res) => {
+cartsRouter.delete('/:id/products/:idProd', checkAuthenticated,  async (req, res) => {
   const { id, idProd } = req.params;
   try {
     const cart = await Cart.findOne({ _id: id });

@@ -10,11 +10,11 @@ paths:
     $ref: products.yaml#/instance
   /api/carts:
     $ref: cart.yaml#/collection
-  /api/carts/{id}:
+  /api/user/{id}/cart:
     $ref: cart.yaml#/instance
-  /api/carts/{id}/products:
+  /api/user/{id}/cart/{id}/products:
     $ref: cart.yaml#/cartproducts
-  /api/carts/{id}/products/{idProd}:
+  /api/user/{id}/cart/{id}/products/{idProd}:
     $ref: cart.yaml#/products    
 
 components:

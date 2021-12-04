@@ -1,0 +1,28 @@
+collection:
+  post:
+
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id: 
+          type: string
+        username: 
+          type: string
+        password:
+          type: string
+        cart: 
+          type: string
+        address:
+          type: string
+        age:
+          type: number
+        telephone:
+          type: number
+        avatar:
+          type: string
+        role:
+          type: string
+

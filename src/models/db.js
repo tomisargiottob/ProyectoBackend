@@ -1,16 +1,28 @@
-const config = require('config');
 const mongoose = require('mongoose');
 
-mongoose.connect(
-  config.db.uriAtlas, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('connected to db');
-    }
-  },
-);
+class Database {
+  constructor({ logger, uri }) {
+    this.logger = logger.child({ module: 'Database' });
+    this.uri = uri;
+  }
+
+  connect() {
+    const log = this.logger.child({ method: 'connect' });
+    mongoose.connect(
+      this.uri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+      },
+      (err) => {
+        if (err) {
+          log.error(err);
+        } else {
+          log.info('connected to db');
+        }
+      },
+    );
+  }
+}
+
+module.exports = Database;
