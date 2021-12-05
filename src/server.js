@@ -15,7 +15,7 @@ const { userRouter } = require('./controllers/user');
 const { router } = require('./routers/auth.route');
 const { passport } = require('./utils/passport.util');
 
-const PORT = 8080;
+// const PORT = 8080;
 async function main() {
   const db = new Database({ logger, uri: process.env.MONGODBURI });
 
@@ -41,14 +41,14 @@ async function main() {
   }));
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(deps[0]));
   app.use('/api/products', productsRouter);
   app.use('/api/carts', cartsRouter);
   app.use('/api/user', userRouter);
   app.use('/', router);
+  app.use('/', swaggerUI.serve, swaggerUI.setup(deps[0]));
 
-  app.listen(PORT, () => {
-    logger.info(`Server up and listening on: http://localhost:${PORT}`);
+  app.listen(process.env.PORT, () => {
+    logger.info(`Server up and listening on: http://localhost:${process.env.PORT}`);
   });
 
   app.on('error', (err) => {
