@@ -2,6 +2,7 @@ const { Router } = require('express');
 const multer = require('multer');
 const checkAuthenticated = require('../middleware/auth.middleware');
 const User = require('../models/user-model');
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads');

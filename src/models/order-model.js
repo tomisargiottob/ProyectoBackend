@@ -8,19 +8,22 @@ const Schema = mongoose.Schema({
       return uuid();
     },
   },
+  user: {
+    type: String,
+  },
   products: [{
-    _id: {
-      type: String,
-      required: true,
-    },
-    ammount: {
-      type: Number,
-      required: true,
-    },
+    _id: String,
+    ammount: Number,
   }],
+  status: {
+    type: String,
+  },
+  deliveryDate: {
+    type: String,
+  },
 },
 {
   timestamps: true,
 });
 
-module.exports = mongoose.model('cart', Schema);
+module.exports = mongoose.model('order', Schema);

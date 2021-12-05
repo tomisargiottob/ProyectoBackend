@@ -15,18 +15,7 @@ collection:
         $ref: './errors.yaml#/401'
       '500':
         $ref: './errors.yaml#/500'
-  post:
-    summary: Add a new cart
-    operationId: createCart
-    responses:
-      '200':
-        description: Created
-      '401':
-        $ref: './errors.yaml#/401'
-      '500':
-        $ref: './errors.yaml#/500'
         
-      
 instance:
   get:
     summary: Get one cart
@@ -48,6 +37,17 @@ instance:
         $ref: './errors.yaml#/401'
       '404':
         $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+  post:
+    summary: Buy all products in cart
+    operationId: buyCart
+    responses:
+      '200':
+        description: Created
+      '401':
+        $ref: './errors.yaml#/401'
       '500':
         $ref: './errors.yaml#/500'
 

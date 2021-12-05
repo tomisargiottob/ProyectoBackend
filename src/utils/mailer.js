@@ -1,4 +1,7 @@
 const nodemailer = require('nodemailer');
+const logger = require('./logger');
+
+const log = logger.child({ module: 'mailer' });
 
 async function sendEmail({ subject, html, to }) {
   if (to === 'admin') {
@@ -25,9 +28,12 @@ async function sendEmail({ subject, html, to }) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    log.info(info.accepted);
+    if (info.rejected.length > 0) {
+      log.warn(info.rejected);
+    }
   } catch (error) {
-    console.log(error);
+    log.error(error);
   }
 }
 
