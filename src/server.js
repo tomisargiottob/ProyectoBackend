@@ -52,7 +52,7 @@ async function initializeApp() {
   app.use('/api/carts', cartsRouter);
   app.use('/api/user', userRouter);
   app.use('/', router);
-  app.get('/', swaggerUI.serve, swaggerUI.setup(deps[0]));
+  app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(deps[0]));
 
   app.listen(process.env.PORT, () => {
     logger.info(`Server up and listening on: http://localhost:${process.env.PORT}`);
