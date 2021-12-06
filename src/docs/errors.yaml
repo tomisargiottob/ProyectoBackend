@@ -12,7 +12,7 @@
         default: {message: Object not found in database, code: 404}
 
 '401':
-  description: Unauthorized tomi
+  description: Unauthorized
   content:
     application/json:
       schema:

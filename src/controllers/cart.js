@@ -5,6 +5,7 @@ const User = require('../models/user-model');
 const Order = require('../models/order-model');
 const checkAuthenticated = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
+const sendEmail = require('../utils/mailer');
 
 const log = logger.child({ module: 'Cart controller' });
 const cartsRouter = new Router();
@@ -41,7 +42,7 @@ cartsRouter.get('/:id', checkAuthenticated, async (req, res) => {
 cartsRouter.post('/:id', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
-    const userCart = await Cart.findOne({ _id: id });
+    const userCart = await Cart.findOne({ _id: id }).populate('products');
     const user = await User.findOne({ cart: id });
     const date = new Date();
     const createdOrder = await Order.create({
@@ -52,6 +53,9 @@ cartsRouter.post('/:id', checkAuthenticated, async (req, res) => {
       deliveryDate: date.setDate(date.getDate() + 1),
     });
     await Cart.findOneAndUpdate({ products: [] });
+    const subject = `Nueva orden de ${user.username}`;
+    log.info('Sending email ');
+    sendEmail({ subject, html: `<h1>Nueva orden registrada </h1><p> Se ha registrado una nueva orden del usuario con los siguientes productos ${JSON.stringify(userCart.products)}</p>`, to: 'admin' });
     res.status(200).send({ createdOrder });
     log.info('Order succesfully created');
   } catch (err) {

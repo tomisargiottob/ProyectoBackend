@@ -45,7 +45,7 @@ instance:
     operationId: buyCart
     responses:
       '200':
-        description: Created
+        description: Order succesfylly created
       '401':
         $ref: './errors.yaml#/401'
       '500':
@@ -249,13 +249,11 @@ components:
       properties: 
         id: 
           type: string
-        timestamp: 
-          type: number
         products:
           type: array
           items:
             type: object
             properties:
               $ref: ./products.yaml#/components/schemas/Product/properties
-              amount:
+              ammount:
                 type: number

@@ -47,7 +47,7 @@ passport.use('signup', new LocalStrategy({
     const user = await UserModel.findOne({ username });
     if (user) {
       log.info('usuario existe');
-      return done(null, false);
+      return done(null, false, { message: 'usuario existe' });
     }
     createdCart = await Cart.create({ products: [] });
   } catch (err) {

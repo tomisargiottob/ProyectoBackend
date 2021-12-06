@@ -16,7 +16,7 @@ router.post('/api/logout', (req, res) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads');
+    cb(null, 'public/uploads');
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -25,6 +25,5 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/api/user', upload.single('avatar'), passport.authenticate('signup', {}), postSignup);
-
 
 module.exports = { router };

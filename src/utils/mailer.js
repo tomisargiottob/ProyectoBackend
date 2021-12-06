@@ -28,9 +28,9 @@ async function sendEmail({ subject, html, to }) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    log.info(info.accepted);
+    log.info({ accepted: info.accepted });
     if (info.rejected.length > 0) {
-      log.warn(info.rejected);
+      log.warn({ rejected: info.rejected });
     }
   } catch (error) {
     log.error(error);
