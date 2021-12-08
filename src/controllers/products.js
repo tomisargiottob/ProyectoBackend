@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const Product = require('../models/product-model');
 const logger = require('../utils/logger');
+const checkAuthenticated = require('../middleware/auth.middleware');
+
 
 const log = logger.child({ module: 'product controller' });
 
@@ -35,7 +37,7 @@ productsRouter.get('/:id', async (req, res) => {
   }
 });
 
-productsRouter.post('', async (req, res) => {
+productsRouter.post('', checkAuthenticated, async (req, res) => {
   const product = req.body;
   try {
     const newProduct = await Product.create(product);
@@ -47,7 +49,7 @@ productsRouter.post('', async (req, res) => {
   }
 });
 
-productsRouter.put('/:id', async (req, res) => {
+productsRouter.put('/:id', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   const data = req.body;
   try {
@@ -65,7 +67,7 @@ productsRouter.put('/:id', async (req, res) => {
   }
 });
 
-productsRouter.delete('/:id', async (req, res) => {
+productsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
   const { id } = req.params;
   try {
     const product = await Product.deleteOne({ _id: id });
