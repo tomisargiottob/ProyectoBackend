@@ -10,15 +10,9 @@ const Schema = mongoose.Schema({
   },
   user: {
     type: String,
+    required: true,
   },
-  products: [{
-    _id: String,
-    ammount: Number,
-  }],
-  status: {
-    type: String,
-  },
-  deliveryDate: {
+  text: {
     type: String,
   },
 },
@@ -26,4 +20,4 @@ const Schema = mongoose.Schema({
   timestamps: true,
 });
 
-module.exports = mongoose.model('order', Schema);
+module.exports = mongoose.model('message', Schema);
