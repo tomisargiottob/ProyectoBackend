@@ -1,24 +1,9 @@
-const { Router } = require('express');
-const multer = require('multer');
-const checkAuthenticated = require('../middleware/auth.middleware');
 const User = require('../models/user-model');
 const logger = require('../utils/logger');
 
-const log = logger.child({ module: 'Cart controller' });
+const log = logger.child({ module: 'User controller' });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads');
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage });
-
-const userRouter = new Router();
-
-userRouter.get('/:id', checkAuthenticated, async (req, res) => {
+async function findUser(req, res) {
   const { id } = req.params;
   try {
     log.info({ id }, 'Searching user');
@@ -33,9 +18,9 @@ userRouter.get('/:id', checkAuthenticated, async (req, res) => {
     log.error({ id }, err.message);
     return res.status(500).json({ message: err.message });
   }
-});
+}
 
-userRouter.patch('/:id', checkAuthenticated, upload.single('avatar'), async (req, res) => {
+async function updateUser(req, res) {
   const { id } = req.params;
   const update = req.body;
   try {
@@ -47,6 +32,6 @@ userRouter.patch('/:id', checkAuthenticated, upload.single('avatar'), async (req
     res.status(500).json({ message: err.message });
     log.error({ id }, err.message);
   }
-});
+}
 
-module.exports = { userRouter };
+module.exports = { findUser, updateUser };

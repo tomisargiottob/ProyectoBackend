@@ -1,31 +1,33 @@
-const { Router } = require('express');
-const Cart = require('../models/cart-model');
-const Product = require('../models/product-model');
-const User = require('../models/user-model');
-const Order = require('../models/order-model');
-const checkAuthenticated = require('../middleware/auth.middleware');
+const CartDaoFactory = require('../services/cart/cart-factory');
+const ProductDaoFactory = require('../services/product/product-factory');
+const UserDaoFactory = require('../services/user/user-factory');
+const OrderDaoFactory = require('../services/order/order-factory');
 const logger = require('../utils/logger');
 const sendEmail = require('../utils/mailer');
 
-const log = logger.child({ module: 'Cart controller' });
-const cartsRouter = new Router();
+const CartDao = CartDaoFactory.getDao();
+const ProductDao = ProductDaoFactory.getDao();
+const UserDao = UserDaoFactory.getDao();
+const OrderDao = OrderDaoFactory.getDao();
 
-cartsRouter.get('', checkAuthenticated, async (req, res) => {
+const log = logger.child({ module: 'Cart controller' });
+
+async function getCarts(req, res) {
   try {
     log.info('Searching for all carts');
-    const carts = await Cart.find();
+    const carts = await CartDao.getAll();
     res.status(200).send(carts);
     log.info('All carts information sent');
   } catch (err) {
     log.info('Could not fetch all carts');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.get('/:id', checkAuthenticated, async (req, res) => {
+async function findCart(req, res) {
   const { id } = req.params;
   try {
-    const foundCart = await Cart.findOne({ _id: id });
+    const foundCart = await CartDao.find({ id });
     if (foundCart) {
       res.status(200).send(foundCart);
       log.info({ id }, 'Cart information sent');
@@ -37,22 +39,22 @@ cartsRouter.get('/:id', checkAuthenticated, async (req, res) => {
     log.info('Could not fetch cart');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.post('/:id', checkAuthenticated, async (req, res) => {
+async function completeCart(req, res) {
   const { id } = req.params;
   try {
-    const userCart = await Cart.findOne({ _id: id }).populate('products');
-    const user = await User.findOne({ cart: id });
+    const userCart = await CartDao.find({ id }).populate('products');
+    const user = await UserDao.find(id);
     const date = new Date();
-    const createdOrder = await Order.create({
+    const createdOrder = await OrderDao.create({
       // eslint-disable-next-line no-underscore-dangle
-      user: user._id,
+      user: user.id,
       products: userCart.products,
       status: 'pending',
       deliveryDate: date.setDate(date.getDate() + 1),
     });
-    await Cart.findOneAndUpdate({ products: [] });
+    await CartDao.update(userCart.id, { products: [] });
     const subject = `Nueva orden de ${user.username}`;
     log.info('Sending email ');
     sendEmail({ subject, html: `<h1>Nueva orden registrada </h1><p> Se ha registrado una nueva orden del usuario con los siguientes productos ${JSON.stringify(userCart.products)}</p>`, to: 'admin' });
@@ -62,12 +64,12 @@ cartsRouter.post('/:id', checkAuthenticated, async (req, res) => {
     log.warn('Could not create order');
     res.status(500).send({ message: err.message });
   }
-});
+}
 
-cartsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
+async function deleteCart(req, res) {
   const { id } = req.params;
   try {
-    const cart = await Cart.deleteOne({ _id: id });
+    const cart = await CartDao.delete(id);
     if (cart.n) {
       res.status(200).send({ cart });
       log.warn('Could succesfully created');
@@ -79,12 +81,12 @@ cartsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
     log.warn('Cart could not be deleted');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.get('/:id/products', checkAuthenticated, async (req, res) => {
+async function getCartProducts(req, res) {
   const { id } = req.params;
   try {
-    const foundCart = await Cart.findOne({ _id: id });
+    const foundCart = await CartDao.find(id);
     if (foundCart) {
       res.status(200).send({ products: foundCart.products });
       log.warn('Cart products fetched');
@@ -96,35 +98,34 @@ cartsRouter.get('/:id/products', checkAuthenticated, async (req, res) => {
     log.warn('Cart products could not be fetched');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.post('/:id/products/:idProd', checkAuthenticated, async (req, res) => {
+async function addCartProduct(req, res) {
   const { id, idProd } = req.params;
   const { ammount } = req.body;
   try {
     if (ammount <= 0) {
       res.status(400).send({ code: 400, message: 'Can not set a negative ammount to a product' });
     }
-    const foundCart = await Cart.findOne({ _id: id });
+    const foundCart = await CartDao.find(id);
     if (foundCart) {
       log.info({ id }, 'Cart fetched , adding products');
       // eslint-disable-next-line
-      let product = foundCart.products.find((element) => element._id == idProd);
+      let product = foundCart.products.find((element) => element.id == idProd);
       if (!product) {
-        product = await Product.findOne({ _id: idProd });
+        product = await ProductDao.find(idProd);
         if (!product) {
           log.warn({ id }, 'Product does not exist');
           res.status(404).send({ code: 404, message: `There is no product with the id ${idProd}` });
         }
         // eslint-disable-next-line no-underscore-dangle
-        foundCart.products.push({ _id: idProd, ammount });
+        foundCart.products.push({ id: idProd, ammount });
       } else {
         product.ammount += ammount;
       }
-      const updatedCart = await Cart.findOneAndUpdate(
-        { _id: id },
+      const updatedCart = await CartDao.update(
+        id,
         { products: foundCart.products },
-        { new: true },
       );
       res.status(200).send({ cart: updatedCart });
     } else {
@@ -135,20 +136,20 @@ cartsRouter.post('/:id/products/:idProd', checkAuthenticated, async (req, res) =
     log.warn({ cart: id, product: idProd }, 'Product could not be added to cart');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.put('/:id/products/:idProd', checkAuthenticated, async (req, res) => {
+async function updateCartProduct(req, res) {
   const { id, idProd } = req.params;
   const { ammount } = req.body;
   try {
-    const foundCart = await Cart.findOne({ _id: id });
+    const foundCart = await CartDao.find(id);
     if (foundCart) {
       // eslint-disable-next-line
-      const product = foundCart.products.find((element) => element._id == idProd);
+      const product = foundCart.products.find((element) => element.id == idProd);
       if (product) {
         product.ammount = ammount;
-        await Cart.findOneAndUpdate({ _id: id }, { products: foundCart.products }, { new: true });
-        res.status(200).send({ foundCart });
+        const updatedCart = await CartDao.update(id, { products: foundCart.products });
+        res.status(200).send({ updatedCart });
         log.info({ id, product: idProd }, 'Cart product succesfully updated');
       } else {
         log.info({ id, product: idProd }, 'Cart does not have product selected');
@@ -162,16 +163,16 @@ cartsRouter.put('/:id/products/:idProd', checkAuthenticated, async (req, res) =>
     log.warn({ cart: id, product: idProd }, 'Product could not be edited in cart');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-cartsRouter.delete('/:id/products/:idProd', checkAuthenticated, async (req, res) => {
+async function removeCartProduct(req, res) {
   const { id, idProd } = req.params;
   try {
-    const cart = await Cart.findOne({ _id: id });
+    const cart = await CartDao.find(id);
     if (cart) {
       // eslint-disable-next-line
-      cart.products = cart.products.filter((product) => product._id != idProd);
-      const updatedCart = await Cart.findOneAndUpdate({ _id: id }, cart, { new: true });
+      cart.products = cart.products.filter((product) => product.id != idProd);
+      const updatedCart = await CartDao.update(id, { products: cart.products });
       res.status(200).send({ cart: updatedCart });
       log.info({ id, product: idProd }, 'Cart product succesfully removed');
     } else {
@@ -182,6 +183,15 @@ cartsRouter.delete('/:id/products/:idProd', checkAuthenticated, async (req, res)
     log.warn({ cart: id, product: idProd }, 'Product could not be removed from cart');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-module.exports = { cartsRouter };
+module.exports = {
+  getCarts,
+  findCart,
+  completeCart,
+  deleteCart,
+  getCartProducts,
+  addCartProduct,
+  updateCartProduct,
+  removeCartProduct,
+};

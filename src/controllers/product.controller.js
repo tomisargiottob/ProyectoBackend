@@ -1,25 +1,20 @@
-const { Router } = require('express');
 const Product = require('../models/product-model');
 const logger = require('../utils/logger');
-const checkAuthenticated = require('../middleware/auth.middleware');
-
 
 const log = logger.child({ module: 'product controller' });
 
-const productsRouter = new Router();
-
-productsRouter.get('', async (req, res) => {
+async function getProducts(req, res) {
   try {
     log.info('Searching all products');
-    const todosProductos = await Product.find();
-    res.status(200).send(todosProductos);
+    const allProducts = await Product.find();
+    res.status(200).send(allProducts);
     log.info('All products sent');
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
-});
+}
 
-productsRouter.get('/:id', async (req, res) => {
+async function findProduct(req, res) {
   const { id } = req.params;
   try {
     log.info('Searching product');
@@ -35,9 +30,9 @@ productsRouter.get('/:id', async (req, res) => {
     log.error('Could not get product');
     res.status(500).send({ message: err.message });
   }
-});
+}
 
-productsRouter.post('', checkAuthenticated, async (req, res) => {
+async function createProduct(req, res) {
   const product = req.body;
   try {
     const newProduct = await Product.create(product);
@@ -47,9 +42,9 @@ productsRouter.post('', checkAuthenticated, async (req, res) => {
     log.error('Could not create product');
     res.status(500).send({ message: err.message });
   }
-});
+}
 
-productsRouter.put('/:id', checkAuthenticated, async (req, res) => {
+async function updateProduct(req, res) {
   const { id } = req.params;
   const data = req.body;
   try {
@@ -65,9 +60,9 @@ productsRouter.put('/:id', checkAuthenticated, async (req, res) => {
     log.error('Could not edit product');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-productsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
+async function removeProduct(req, res) {
   const { id } = req.params;
   try {
     const product = await Product.deleteOne({ _id: id });
@@ -82,6 +77,12 @@ productsRouter.delete('/:id', checkAuthenticated, async (req, res) => {
     log.info({ id }, 'Product could not be deleted');
     res.status(500).send({ code: 500, message: err.message });
   }
-});
+}
 
-module.exports = { productsRouter };
+module.exports = {
+  getProducts,
+  findProduct,
+  createProduct,
+  updateProduct,
+  removeProduct,
+};
