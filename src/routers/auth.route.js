@@ -4,15 +4,15 @@ const { passport } = require('../utils/passport.util');
 const {
   postSignup,
   postLogin,
+  postLogout,
+  failedSignup,
 } = require('../controllers/auth.controller');
 
 const router = express.Router();
 
-router.post('/api/login', passport.authenticate('login', {}), postLogin);
-router.post('/api/logout', (req, res) => {
-  req.logout();
-  res.clearCookie('connect.sid').status(204);
-});
+router.post('/api/auth/login', passport.authenticate('login', {}), postLogin);
+router.post('/api/auth/logout', postLogout);
+router.get('/api/auth/signup/denied', failedSignup);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,6 +24,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-router.post('/api/user', upload.single('avatar'), passport.authenticate('signup', {}), postSignup);
+router.post('/api/user', upload.single('avatar'), (req, res) => {
+  passport.authenticate('signup', (err, user, info) => {
+    if (info) {
+      res.status(info.code).json(info);
+    } else if (user) {
+      postSignup(req, res);
+    }
+  })(req, res);
+});
 
 module.exports = { router };
