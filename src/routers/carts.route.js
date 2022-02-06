@@ -19,8 +19,9 @@ cartRouter.post('/:id', checkAuthenticated, completeCart);
 cartRouter.delete('/:id', checkAuthenticated, deleteCart);
 
 cartRouter.get('/:id/products', checkAuthenticated, getCartProducts);
-cartRouter.post('/:id/products', checkAuthenticated, addCartProduct);
+// cartRouter.post('/:id/products', checkAuthenticated, addCartProduct);
 
+cartRouter.post('/:id/products/:idProd', checkAuthenticated, addCartProduct);
 cartRouter.put('/:id/products/:idProd', checkAuthenticated, updateCartProduct);
 cartRouter.delete('/:id/products/:idProd', checkAuthenticated, removeCartProduct);
 

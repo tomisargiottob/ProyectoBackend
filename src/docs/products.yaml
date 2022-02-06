@@ -38,6 +38,8 @@ collection:
                 type: string
               price:
                 type: number
+              category:
+                type: string
               stock:
                 type: number
     responses:
@@ -103,6 +105,8 @@ instance:
                 type: string
               thumbnail:
                 type: string
+              category:
+                type: string
               price:
                 type: number
               stock:
@@ -157,6 +161,8 @@ components:
         code:
           type: string
         thumbnail:
+          type: string
+        category:
           type: string
         price:
           type: number

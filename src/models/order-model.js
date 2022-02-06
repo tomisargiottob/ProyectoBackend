@@ -12,7 +12,7 @@ const Schema = mongoose.Schema({
     type: String,
   },
   products: [{
-    _id: String,
+    id: String,
     ammount: Number,
   }],
   status: {

@@ -1,6 +1,41 @@
 collection:
   post:
-
+    summary: Create a new User
+    operationId: signUpUser
+    requestBody:
+      description: User to sign up to 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - name
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+              code:
+                type: string
+              thumbnail:
+                type: string
+              price:
+                type: number
+              stock:
+                type: number
+    responses:
+      '200':
+        description: Created
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Product'
+      '401':
+        $ref: './errors.yaml#/401'
+      '500':
+        $ref: './errors.yaml#/500'   
 
 components:
   schemas:

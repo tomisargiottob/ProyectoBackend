@@ -49,11 +49,12 @@ class CartDaoMemory extends CartDao {
   }
 
   async create(data) {
-    const msg = {
+    const cart = {
       id: uuid(),
       products: data.products,
+      user: data.user,
     };
-    this.carts.push(msg);
+    this.carts.push(cart);
     return returnCarts(this.carts);
   }
 

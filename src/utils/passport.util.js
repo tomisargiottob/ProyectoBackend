@@ -2,10 +2,13 @@ const passport = require('passport');
 // const { Strategy } = require('passport-facebook');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const Cart = require('../models/cart-model');
-const UserModel = require('../models/user-model');
+const UserDaoFactory = require('../services/user/user-factory');
+const CartDaoFactory = require('../services/cart/cart-factory');
 const sendEmail = require('./mailer');
 const logger = require('./logger');
+
+const UserDao = UserDaoFactory.getDao();
+const CartDao = CartDaoFactory.getDao();
 
 const log = logger.child({ module: 'passport' });
 function isValidPasword(user, password) {
@@ -20,20 +23,22 @@ passport.use('login', new LocalStrategy(
   {
     usernameField: 'email',
   },
-  (username, password, done) => {
-    UserModel.findOne({ username }, (err, user) => {
-      if (err) return done(err);
+  async (username, password, done) => {
+    try {
+      const user = await UserDao.find({ username });
       if (!user) {
         log.info('no existe el usuario');
-        return done(null, false);
+        return done(null, false, { message: 'No existe un usuario registrado con ese correo', code: 404 });
       }
       if (!isValidPasword(user, password)) {
         log.info('invalid password');
-        return done(null, false);
+        return done(null, false, { message: 'Contraseña incorrecta', code: 401 });
       }
       log.info('login succesfully');
       return done(null, user);
-    });
+    } catch (err) {
+      return done(err);
+    }
   },
 ));
 
@@ -44,12 +49,11 @@ passport.use('signup', new LocalStrategy({
   let createdCart = {};
   const { address, age, telephone } = req.body;
   try {
-    const user = await UserModel.findOne({ username });
+    const user = await UserDao.find({ username });
     if (user) {
       log.info('usuario existe');
       return done(null, false, { message: 'usuario existe', code: 400 });
     }
-    createdCart = await Cart.create({ products: [] });
   } catch (err) {
     log.error(err);
     return done(err);
@@ -61,12 +65,13 @@ passport.use('signup', new LocalStrategy({
     age,
     telephone,
     avatar: req.file?.originalname,
-    // eslint-disable-next-line no-underscore-dangle
-    cart: createdCart._id,
   };
   try {
-    const createdUser = await UserModel.create(newUser);
+    const createdUser = await UserDao.create(newUser);
     log.info('usuario creado');
+    await CartDao.create({ products: [], user: createdUser.id });
+    log.info('Se ha creado un carrito para el usuario ');
+
     sendEmail({ subject: 'Nuevo Registro', html: `<h1>Nuevo usuario creado </h1><p> Se ha registrado un nuevo usuario ${JSON.stringify(newUser)}</p>`, to: 'admin' });
     return done(null, createdUser);
   } catch (err) {
@@ -77,10 +82,15 @@ passport.use('signup', new LocalStrategy({
 
 passport.serializeUser((user, done) => {
   // eslint-disable-next-line no-underscore-dangle
-  done(null, user._id);
+  done(null, user.id);
 });
-passport.deserializeUser((id, done) => {
-  UserModel.findById(id, done);
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await UserDao.find({ id });
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
 module.exports = { passport };

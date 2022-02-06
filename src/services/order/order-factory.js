@@ -4,24 +4,26 @@ const OrderDaoMongo = require('./orderMongo-dao');
 const OrderDaoMemory = require('./orderMemory-dao');
 const logger = require('../../utils/logger');
 
+const log = logger.child({ module: 'Order Factory' });
+
 const args = minimist(process.argv.slice(2));
 
 const option = args.d;
 if (option) {
-  logger.info(`The DAO in ${option} option was selected`);
+  log.info(`The DAO in ${option} option was selected`);
 } else {
-  logger.info('Default mode DAO in memory selected');
+  log.info('Default mode DAO in memory selected');
 }
 let dao;
 
 class OrderDaoFactory {
   static getDao() {
     if (option === 'mongo') {
-      dao = OrderDaoMongo.getInstance(logger);
+      dao = OrderDaoMongo.getInstance(log);
     } else if (option === 'file') {
-      dao = OrderDaoFile.getInstance(logger);
+      dao = OrderDaoFile.getInstance(log);
     } else {
-      dao = OrderDaoMemory.getInstance(logger);
+      dao = OrderDaoMemory.getInstance(log);
     }
     return dao;
   }

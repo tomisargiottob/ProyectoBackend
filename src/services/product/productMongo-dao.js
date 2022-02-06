@@ -12,17 +12,17 @@ class ProductDaoMongo extends ProductDao {
     return products;
   }
 
-  async find(id) {
+  // eslint-disable-next-line consistent-return
+  async find(where) {
     let product;
     try {
-      product = await ProductModel.find({ id });
+      product = await ProductModel.findOne(where);
       if (product) {
         return returnProducts(product);
       }
     } catch (err) {
       throw new Error('Error looking for Product');
     }
-    throw new Error('Product not found');
   }
 
   async update(id, data) {

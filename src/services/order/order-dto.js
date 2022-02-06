@@ -6,7 +6,7 @@ function normalizeOrders(orders) {
       user: order.user,
       status: order.status,
       deliveryDate: order.deliveryDate,
-      products: order.products,
+      products: order.products.map((product) => ({ id: product.id, ammount: product.ammount })),
     }));
   } else if (typeof orders === 'object') {
     parsedOrders = {
@@ -14,7 +14,7 @@ function normalizeOrders(orders) {
       user: orders.user,
       status: orders.status,
       deliveryDate: orders.deliveryDate,
-      products: orders.products,
+      products: orders.products.map((product) => ({ id: product.id, ammount: product.ammount })),
     };
   } else {
     throw new Error(`Orders must be of type object or array, recieved a ${typeof orders}`);

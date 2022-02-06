@@ -35,6 +35,9 @@
                       "thumbnail": {
                         "type": "string"
                       },
+                      "category": {
+                        "type": "string"
+                      },
                       "price": {
                         "type": "number"
                       },
@@ -48,7 +51,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -122,6 +125,9 @@
                   "price": {
                     "type": "number"
                   },
+                  "category": {
+                    "type": "string"
+                  },
                   "stock": {
                     "type": "number"
                   }
@@ -153,6 +159,9 @@
                     "thumbnail": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
                     "price": {
                       "type": "number"
                     },
@@ -165,7 +174,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -248,6 +257,9 @@
                     "thumbnail": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
                     "price": {
                       "type": "number"
                     },
@@ -260,7 +272,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -363,6 +375,9 @@
                   "thumbnail": {
                     "type": "string"
                   },
+                  "category": {
+                    "type": "string"
+                  },
                   "price": {
                     "type": "number"
                   },
@@ -397,6 +412,9 @@
                     "thumbnail": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
                     "price": {
                       "type": "number"
                     },
@@ -409,7 +427,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -512,6 +530,9 @@
                     "thumbnail": {
                       "type": "string"
                     },
+                    "category": {
+                      "type": "string"
+                    },
                     "price": {
                       "type": "number"
                     },
@@ -524,7 +545,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -609,9 +630,6 @@
                       "id": {
                         "type": "string"
                       },
-                      "timestamp": {
-                        "type": "number"
-                      },
                       "products": {
                         "type": "array",
                         "items": {
@@ -632,6 +650,9 @@
                             "thumbnail": {
                               "type": "string"
                             },
+                            "category": {
+                              "type": "string"
+                            },
                             "price": {
                               "type": "number"
                             },
@@ -648,60 +669,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "number"
-                    }
-                  },
-                  "default": {
-                    "message": "Not authorized for the request",
-                    "code": 401
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "number"
-                    }
-                  },
-                  "default": {
-                    "message": "Server encountered a problem",
-                    "code": 500
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Add a new cart",
-        "operationId": "createCart",
-        "responses": {
-          "200": {
-            "description": "Created"
-          },
-          "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -772,9 +740,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "products": {
                       "type": "array",
                       "items": {
@@ -795,6 +760,9 @@
                           "thumbnail": {
                             "type": "string"
                           },
+                          "category": {
+                            "type": "string"
+                          },
                           "price": {
                             "type": "number"
                           },
@@ -810,7 +778,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -877,6 +845,59 @@
           }
         }
       },
+      "post": {
+        "summary": "Buy all products in cart",
+        "operationId": "buyCart",
+        "responses": {
+          "200": {
+            "description": "Order succesfylly created"
+          },
+          "401": {
+            "description": "Unauthorized1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  },
+                  "default": {
+                    "message": "Not authorized for the request",
+                    "code": 401
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "number"
+                    }
+                  },
+                  "default": {
+                    "message": "Server encountered a problem",
+                    "code": 500
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete one cart",
         "operationId": "deleteCart",
@@ -901,9 +922,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "products": {
                       "type": "array",
                       "items": {
@@ -924,6 +942,9 @@
                           "thumbnail": {
                             "type": "string"
                           },
+                          "category": {
+                            "type": "string"
+                          },
                           "price": {
                             "type": "number"
                           },
@@ -939,7 +960,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -1049,6 +1070,9 @@
                           "thumbnail": {
                             "type": "string"
                           },
+                          "category": {
+                            "type": "string"
+                          },
                           "price": {
                             "type": "number"
                           },
@@ -1064,7 +1088,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -1132,7 +1156,7 @@
         }
       }
     },
-    "/api/carts/{id}/products/{idProd}": {
+    "/api/cart/{id}/products/{idProd}": {
       "post": {
         "summary": "Add one product of a cart",
         "operationId": "addCartProduct",
@@ -1201,6 +1225,9 @@
                           "thumbnail": {
                             "type": "string"
                           },
+                          "category": {
+                            "type": "string"
+                          },
                           "price": {
                             "type": "number"
                           },
@@ -1216,7 +1243,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -1372,7 +1399,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {
@@ -1471,9 +1498,6 @@
                     "id": {
                       "type": "string"
                     },
-                    "timestamp": {
-                      "type": "number"
-                    },
                     "products": {
                       "type": "array",
                       "items": {
@@ -1494,6 +1518,9 @@
                           "thumbnail": {
                             "type": "string"
                           },
+                          "category": {
+                            "type": "string"
+                          },
                           "price": {
                             "type": "number"
                           },
@@ -1509,7 +1536,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
+            "description": "Unauthorized1",
             "content": {
               "application/json": {
                 "schema": {

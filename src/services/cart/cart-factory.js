@@ -5,23 +5,24 @@ const CartDaoMemory = require('./cartMemory-dao');
 const logger = require('../../utils/logger');
 
 const args = minimist(process.argv.slice(2));
+const log = logger.child({ module: 'Cart Factory' });
 
 const option = args.d;
 if (option) {
-  logger.info(`The DAO in ${option} option was selected`);
+  log.info(`The DAO in ${option} option was selected`);
 } else {
-  logger.info('Default mode DAO in memory selected');
+  log.info('Default mode DAO in memory selected');
 }
 let dao;
 
 class CartDaoFactory {
   static getDao() {
     if (option === 'mongo') {
-      dao = CartDaoMongo.getInstance(logger);
+      dao = CartDaoMongo.getInstance(log);
     } else if (option === 'file') {
-      dao = CartDaoFile.getInstance(logger);
+      dao = CartDaoFile.getInstance(log);
     } else {
-      dao = CartDaoMemory.getInstance(logger);
+      dao = CartDaoMemory.getInstance(log);
     }
     return dao;
   }

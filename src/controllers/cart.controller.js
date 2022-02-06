@@ -44,8 +44,8 @@ async function findCart(req, res) {
 async function completeCart(req, res) {
   const { id } = req.params;
   try {
-    const userCart = await CartDao.find({ id }).populate('products');
-    const user = await UserDao.find(id);
+    const userCart = await CartDao.find({ id });
+    const user = await UserDao.find({ id: userCart.user });
     const date = new Date();
     const createdOrder = await OrderDao.create({
       // eslint-disable-next-line no-underscore-dangle
@@ -54,11 +54,11 @@ async function completeCart(req, res) {
       status: 'pending',
       deliveryDate: date.setDate(date.getDate() + 1),
     });
+    res.status(200).send({ createdOrder });
     await CartDao.update(userCart.id, { products: [] });
     const subject = `Nueva orden de ${user.username}`;
     log.info('Sending email ');
     sendEmail({ subject, html: `<h1>Nueva orden registrada </h1><p> Se ha registrado una nueva orden del usuario con los siguientes productos ${JSON.stringify(userCart.products)}</p>`, to: 'admin' });
-    res.status(200).send({ createdOrder });
     log.info('Order succesfully created');
   } catch (err) {
     log.warn('Could not create order');
@@ -86,7 +86,7 @@ async function deleteCart(req, res) {
 async function getCartProducts(req, res) {
   const { id } = req.params;
   try {
-    const foundCart = await CartDao.find(id);
+    const foundCart = await CartDao.find({ id });
     if (foundCart) {
       res.status(200).send({ products: foundCart.products });
       log.warn('Cart products fetched');
@@ -107,13 +107,13 @@ async function addCartProduct(req, res) {
     if (ammount <= 0) {
       res.status(400).send({ code: 400, message: 'Can not set a negative ammount to a product' });
     }
-    const foundCart = await CartDao.find(id);
+    const foundCart = await CartDao.find({ id });
     if (foundCart) {
       log.info({ id }, 'Cart fetched , adding products');
       // eslint-disable-next-line
       let product = foundCart.products.find((element) => element.id == idProd);
       if (!product) {
-        product = await ProductDao.find(idProd);
+        product = await ProductDao.find({ id: idProd });
         if (!product) {
           log.warn({ id }, 'Product does not exist');
           res.status(404).send({ code: 404, message: `There is no product with the id ${idProd}` });
@@ -127,6 +127,7 @@ async function addCartProduct(req, res) {
         id,
         { products: foundCart.products },
       );
+      log.info({ id, product: idProd }, 'Product succesfully added to cart');
       res.status(200).send({ cart: updatedCart });
     } else {
       log.warn({ id }, 'Cart does not exist');
@@ -142,7 +143,7 @@ async function updateCartProduct(req, res) {
   const { id, idProd } = req.params;
   const { ammount } = req.body;
   try {
-    const foundCart = await CartDao.find(id);
+    const foundCart = await CartDao.find({ id });
     if (foundCart) {
       // eslint-disable-next-line
       const product = foundCart.products.find((element) => element.id == idProd);
@@ -168,7 +169,7 @@ async function updateCartProduct(req, res) {
 async function removeCartProduct(req, res) {
   const { id, idProd } = req.params;
   try {
-    const cart = await CartDao.find(id);
+    const cart = await CartDao.find({ id });
     if (cart) {
       // eslint-disable-next-line
       cart.products = cart.products.filter((product) => product.id != idProd);

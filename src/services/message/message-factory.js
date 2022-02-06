@@ -5,23 +5,24 @@ const MessageDaoMemory = require('./messageMemory-dao');
 const logger = require('../../utils/logger');
 
 const args = minimist(process.argv.slice(2));
+const log = logger.child({ module: 'Message Factory' });
 
 const option = args.d;
 if (option) {
-  logger.info(`The DAO in ${option} option was selected`);
+  log.info(`The DAO in ${option} option was selected`);
 } else {
-  logger.info('Default mode DAO in memory selected');
+  log.info('Default mode DAO in memory selected');
 }
 let dao;
 
 class MessageDaoFactory {
   static getDao() {
     if (option === 'mongo') {
-      dao = MessageDaoMongo.getInstance(logger);
+      dao = MessageDaoMongo.getInstance(log);
     } else if (option === 'file') {
-      dao = MessageDaoFile.getInstance(logger);
+      dao = MessageDaoFile.getInstance(log);
     } else {
-      dao = MessageDaoMemory.getInstance(logger);
+      dao = MessageDaoMemory.getInstance(log);
     }
     return dao;
   }

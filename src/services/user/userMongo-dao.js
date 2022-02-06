@@ -12,17 +12,17 @@ class UserDaoMongo extends UserDao {
     return users;
   }
 
-  async find(id) {
+  async find(where) {
     let user;
     try {
-      user = await UserModel.find({ id });
+      user = await UserModel.findOne(where);
       if (user) {
         return returnUsers(user);
       }
     } catch (err) {
       throw new Error('Error looking for User');
     }
-    throw new Error('User not found');
+    // throw new Error('User not found');
   }
 
   async update(id, data) {

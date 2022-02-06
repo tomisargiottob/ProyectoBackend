@@ -11,6 +11,15 @@ const {
 const router = express.Router();
 
 router.post('/api/auth/login', passport.authenticate('login', {}), postLogin);
+// router.post('/api/auth/login', passport.authenticate('login', (err, user, info) => {
+//   if (err) {
+//     res.status(500).json(err);
+//   } else if (info) {
+//     res.status(info.code).json(info);
+//   }
+//   next();
+//   }), postLogin);
+
 router.post('/api/auth/logout', postLogout);
 router.get('/api/auth/signup/denied', failedSignup);
 
@@ -26,7 +35,9 @@ const upload = multer({ storage });
 
 router.post('/api/user', upload.single('avatar'), (req, res) => {
   passport.authenticate('signup', (err, user, info) => {
-    if (info) {
+    if (err) {
+      res.status(500).json(err);
+    } else if (info) {
       res.status(info.code).json(info);
     } else if (user) {
       postSignup(req, res);

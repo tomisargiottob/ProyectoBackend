@@ -15,6 +15,7 @@ function normalizeUsers(users) {
     parsedUsers = {
       id: users.id,
       username: users.username,
+      password: users.password,
       cart: users.cart,
       address: users.address,
       age: users.age,

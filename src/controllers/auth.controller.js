@@ -12,7 +12,7 @@ function failedSignup(req, res) {
 
 function postLogin(req, res) {
   // eslint-disable-next-line no-underscore-dangle
-  res.status(200).json({ id: req.user._id, message: 'Login succesfull' });
+  res.status(200).json({ id: (req.user && req.user.id), message: 'Login succesfull' });
 }
 
 function postLogout(req, res) {

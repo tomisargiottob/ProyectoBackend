@@ -15,17 +15,15 @@ class UserDaoMemory extends UserDao {
     return this.users;
   }
 
-  async find(id) {
-    const foundUser = this.users.find((user) => {
-      if (user.id === id) {
-        return user;
-      }
+  // eslint-disable-next-line consistent-return
+  async find(where) {
+    const foundUser = this.users.find((user) => !Object.entries(where).some(([key, value]) => {
+      if (user[key] !== value) return true;
       return false;
-    });
+    }));
     if (foundUser) {
       return returnUsers(foundUser);
     }
-    throw new Error('user not found');
   }
 
   async update(id, data) {
@@ -52,6 +50,7 @@ class UserDaoMemory extends UserDao {
     const user = {
       id: uuid(),
       username: data.username,
+      password: data.password,
       cart: data.cart,
       address: data.address,
       age: data.age,
@@ -60,7 +59,7 @@ class UserDaoMemory extends UserDao {
       role: data.role,
     };
     this.users.push(user);
-    return returnUsers(this.users);
+    return returnUsers(user);
   }
 
   static getInstance(logger) {

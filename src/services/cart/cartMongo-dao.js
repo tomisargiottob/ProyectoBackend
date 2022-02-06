@@ -12,10 +12,10 @@ class CartDaoMongo extends CartDao {
     return carts;
   }
 
-  async find(id) {
+  async find(where) {
     let cart;
     try {
-      cart = await CartModel.find({ id });
+      cart = await CartModel.findOne(where).lean();
       if (cart) {
         return returnCarts(cart);
       }

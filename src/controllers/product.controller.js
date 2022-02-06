@@ -1,4 +1,6 @@
-const Product = require('../models/product-model');
+const ProductDaoFactory = require('../services/product/product-factory');
+const ProductDao = ProductDaoFactory.getDao();
+
 const logger = require('../utils/logger');
 
 const log = logger.child({ module: 'product controller' });
@@ -6,7 +8,7 @@ const log = logger.child({ module: 'product controller' });
 async function getProducts(req, res) {
   try {
     log.info('Searching all products');
-    const allProducts = await Product.find();
+    const allProducts = await ProductDao.getAll();
     res.status(200).send(allProducts);
     log.info('All products sent');
   } catch (err) {
@@ -18,7 +20,7 @@ async function findProduct(req, res) {
   const { id } = req.params;
   try {
     log.info('Searching product');
-    const foundProduct = await Product.findOne({ _id: id });
+    const foundProduct = await ProductDao.find({ id });
     if (foundProduct) {
       res.status(200).send(foundProduct);
       log.info('Product sent');
@@ -35,7 +37,7 @@ async function findProduct(req, res) {
 async function createProduct(req, res) {
   const product = req.body;
   try {
-    const newProduct = await Product.create(product);
+    const newProduct = await ProductDao.create(product);
     log.info('New product added to database');
     res.status(200).send({ newProduct });
   } catch (err) {
@@ -48,7 +50,7 @@ async function updateProduct(req, res) {
   const { id } = req.params;
   const data = req.body;
   try {
-    const product = await Product.findOneAndUpdate({ _id: id }, data, { new: true });
+    const product = await ProductDao.update(id, data);
     if (product) {
       log.info({ id }, 'Product succesfully edited');
       res.status(200).send({ product });
@@ -65,7 +67,7 @@ async function updateProduct(req, res) {
 async function removeProduct(req, res) {
   const { id } = req.params;
   try {
-    const product = await Product.deleteOne({ _id: id });
+    const product = await ProductDao.deleteOne(id);
     if (product.n) {
       log.info({ id }, 'Product succesfully deleted');
       res.status(204).send();

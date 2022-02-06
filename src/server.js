@@ -9,10 +9,11 @@ const os = require('os');
 const minimist = require('minimist');
 
 const logger = require('./utils/logger');
-const Database = require('./models/db');
-const { productsRouter } = require('./controllers/products');
-const { cartsRouter } = require('./controllers/cart');
-const { userRouter } = require('./controllers/user');
+const Database = require('./models');
+const { productRouter } = require('./routers/products.route');
+const { cartRouter } = require('./routers/carts.route');
+const { userRouter } = require('./routers/users.route');
+const { messageRouter } = require('./routers/messages.route');
 const { router } = require('./routers/auth.route');
 const { passport } = require('./utils/passport.util');
 
@@ -48,8 +49,9 @@ async function initializeApp() {
   app.use(express.static('public'));
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use('/api/products', productsRouter);
-  app.use('/api/carts', cartsRouter);
+  app.use('/api/products', productRouter);
+  app.use('/api/messages', messageRouter);
+  app.use('/api/carts', cartRouter);
   app.use('/api/user', userRouter);
   app.use('/', router);
   app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(deps[0]));
