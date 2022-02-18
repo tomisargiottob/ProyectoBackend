@@ -53,7 +53,7 @@ class MessageDaoMemory extends MessageDao {
       id: uuid(),
       user: data.user,
       text: data.text,
-      time: data.createdAt,
+      time: new Date(),
     };
     this.messages.push(msg);
     return returnMessages(this.messages);

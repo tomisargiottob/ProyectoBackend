@@ -23,6 +23,8 @@ class MessageDaoFile extends MessageDao {
     }
     // eslint-disable-next-line no-param-reassign
     message.id = uuid();
+    // eslint-disable-next-line no-param-reassign
+    message.createdAt = new Date();
     this.messages.push(message);
     await fs.promises.writeFile(this.file, JSON.stringify(this.messages, null, 2));
     const createdMessage = returnMessages(message);

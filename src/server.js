@@ -12,12 +12,13 @@ const { Server } = require('socket.io');
 
 const logger = require('./utils/logger');
 const Database = require('./models');
-// const socket = require('./utils/websocketManager');
+const socketManager = require('./utils/websocketManager');
 const { productRouter } = require('./routers/products.route');
 const { cartRouter } = require('./routers/carts.route');
 const { userRouter } = require('./routers/users.route');
 const { messageRouter } = require('./routers/messages.route');
 const { router } = require('./routers/auth.route');
+// const checkFrontAuthenticated = require('./middleware/authFront.middleware');
 
 const nCpus = os.cpus().length;
 const args = minimist(process.argv.slice(2), {
@@ -39,11 +40,7 @@ async function initializeApp() {
   const app = express();
   const server = createServer(app);
   const io = new Server(server);
-  io.on('connection', (socket) => {
-    socket.on('chat message', (msg) => {
-      io.emit('chat message', msg);
-    });
-  });
+  socketManager(io);
 
   app.use(cors());
   app.use(express.json());
@@ -56,6 +53,9 @@ async function initializeApp() {
   app.use('/', router);
   app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, '/files/websocket.html'));
+  });
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/files/login.html'));
   });
   app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, '/files/login.html'));
