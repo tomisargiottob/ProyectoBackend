@@ -1,7 +1,16 @@
 collection:
   post:
+    tags:
+    - User operations
     summary: Create a new User
     operationId: signUpUser
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: avatar
+        type: file
+        description: Avatar image for user.
     requestBody:
       description: User to sign up to 
       required: true
@@ -10,20 +19,25 @@ collection:
           schema:
             type: object
             required:
-              - name
+              - email
+              - password
             properties:
+              email: 
+                type: string
+              password:
+                type: string
               name:
                 type: string
-              description:
+              surname:
                 type: string
-              code:
+              address:
                 type: string
-              thumbnail:
-                type: string
-              price:
+              age:
                 type: number
-              stock:
+              telephone:
                 type: number
+              role:
+                type: string
     responses:
       '200':
         description: Created
@@ -31,22 +45,197 @@ collection:
           application/json:
             schema:
               type: object
-              $ref: '#/components/schemas/Product'
+              $ref: '#/components/schemas/User'
       '401':
         $ref: './errors.yaml#/401'
       '500':
-        $ref: './errors.yaml#/500'   
+        $ref: './errors.yaml#/500' 
+
+instance:
+  get:
+    tags:
+    - User operations
+    summary: Get user information
+    operationId: getUserInformation
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+  patch:
+    tags:
+    - User operations
+    summary: Update user information
+    operationId: updateUser
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    requestBody: 
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email: 
+                type: string
+              password:
+                type: string
+              name:
+                type: string
+              surname:
+                type: string
+              address:
+                type: string
+              age:
+                type: number
+              telephone:
+                type: number
+              avatar:
+                type: string
+              role:
+                type: string
+    responses:
+      '200':
+        description: Updated
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/User'
+      '401':
+        $ref: './errors.yaml#/401'
+      '500':
+        $ref: './errors.yaml#/500'  
+
+orders:
+  get:
+    tags:
+    - User operations
+    summary: Get user orders
+    operationId: findUserOrders
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './orders.yaml#/components/schemas/Order'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+  
+login:
+  post:
+    tags:
+    - Auth operations
+    summary: Log in
+    operationId: logIn
+    requestBody:
+      description: Credentials to log in with
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email: 
+                type: string
+              password:
+                type: string
+    responses:
+      '200':
+        description: Logged in succesfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  $ref: '#/components/schemas/User'
+                token:
+                  type: string
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500' 
+    
+messages:
+  get:
+    tags:
+    - User operations
+    summary: Get user messages
+    operationId: getUserMessages
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: './messages.yaml#/components/schemas/Message'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
 
 components:
   schemas:
     User:
       type: object
       properties:
-        _id: 
+        id: 
           type: string
         username: 
           type: string
         password:
+          type: string
+        name:
+          type: string
+        surname:
           type: string
         cart: 
           type: string

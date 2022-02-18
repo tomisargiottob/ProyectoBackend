@@ -28,7 +28,7 @@ class CartDaoMongo extends CartDao {
   async update(id, data) {
     // eslint-disable-next-line no-param-reassign
     data.id = id;
-    const cart = await CartModel.findOneAndUpdate(id, data, { new: true });
+    const cart = await CartModel.findOneAndUpdate({ id }, data, { new: true });
     if (cart) {
       return returnCarts(cart);
     }
@@ -36,7 +36,8 @@ class CartDaoMongo extends CartDao {
   }
 
   async delete(id) {
-    await CartModel.findOneAndRemove(id);
+    const cart = await CartModel.findOneAndRemove({ id });
+    return cart;
   }
 
   async create(data) {

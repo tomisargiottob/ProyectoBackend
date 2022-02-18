@@ -1,5 +1,7 @@
 collection:
   get:
+    tags:
+    - Cart operations
     summary: Get all carts
     operationId: getCarts
     responses:
@@ -18,6 +20,8 @@ collection:
         
 instance:
   get:
+    tags:
+    - Cart operations
     summary: Get one cart
     operationId: getCart
     parameters:
@@ -41,17 +45,31 @@ instance:
         $ref: './errors.yaml#/500'
 
   post:
+    tags:
+    - Cart operations
     summary: Buy all products in cart
     operationId: buyCart
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
     responses:
       '200':
         description: Order succesfylly created
+        ontent:
+          application/json:
+            schema:
+              $ref: './orders.yaml#/components/schemas/Order'
       '401':
         $ref: './errors.yaml#/401'
       '500':
         $ref: './errors.yaml#/500'
 
   delete:
+    tags:
+    - Cart operations
     summary: Delete one cart
     operationId: deleteCart
     parameters:
@@ -76,6 +94,8 @@ instance:
 
 cartproducts:
   get:
+    tags:
+    - Cart operations
     summary: Get products of a cart
     operationId: getCartProduct
     parameters:
@@ -106,6 +126,8 @@ cartproducts:
 
 products:
   post:
+    tags:
+    - Cart operations
     summary: Add one product of a cart
     operationId: addCartProduct
     parameters:
@@ -127,9 +149,9 @@ products:
           schema:
             type: object
             required:
-              - amount
+              - ammount
             properties:
-              amount:
+              ammount:
                 type: number
     responses:
       '200':
@@ -137,13 +159,7 @@ products:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                products:
-                  type: array
-                  items:
-                    type: object
-                    $ref: ./products.yaml#/components/schemas/Product
+              $ref: '#/components/schemas/Cart'
       '401':
         $ref: './errors.yaml#/401'
       '404':
@@ -151,7 +167,9 @@ products:
       '500':
         $ref: './errors.yaml#/500'
   put:
-    summary: Change amount of one product of a cart
+    tags:
+    - Cart operations
+    summary: Change ammount of one product of a cart
     operationId: updateCartProduct
     parameters:
       - name: id
@@ -172,41 +190,17 @@ products:
           schema:
             type: object
             required:
-              - amount
+              - ammount
             properties:
-              amount:
+              ammount:
                 type: number
     responses:
       '200':
-        description: Added
+        description: Updated
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                products:
-                  type: array
-                  items:
-                    type: object
-                    properties: 
-                      id: 
-                        type: string
-                      timestamp: 
-                        type: number
-                      name:
-                        type: string
-                      description:
-                        type: string
-                      code:
-                        type: string
-                      thumbnail:
-                        type: string
-                      price:
-                        type: number
-                      stock:
-                        type: number
-                      ammount:
-                        type: number
+              $ref: '#/components/schemas/Cart'
       '401':
         $ref: './errors.yaml#/401'
       '404':
@@ -215,6 +209,8 @@ products:
         $ref: './errors.yaml#/500'
         
   delete:
+    tags:
+    - Cart operations
     summary: Delete one product of a cart
     operationId: deleteCartProduct
     parameters:
@@ -249,11 +245,14 @@ components:
       properties: 
         id: 
           type: string
+        user:
+          type: string
         products:
           type: array
           items:
             type: object
             properties:
-              $ref: ./products.yaml#/components/schemas/Product/properties
+              id:
+                type: string
               ammount:
                 type: number

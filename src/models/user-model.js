@@ -16,6 +16,12 @@ const Schema = mongoose.Schema({
     type: String,
     required: true,
   },
+  name: {
+    type: String,
+  },
+  surname: {
+    type: String,
+  },
   cart: {
     type: String,
   },

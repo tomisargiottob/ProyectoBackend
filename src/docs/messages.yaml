@@ -1,0 +1,44 @@
+collection:
+  get:
+    tags:
+    - Message operations
+    summary: Get user messages
+    operationId: getUserMessages
+    responses:
+      '200':
+        description: Found
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Message'
+      '401':
+        $ref: './errors.yaml#/401'
+      '404':
+        $ref: './errors.yaml#/404'
+      '500':
+        $ref: './errors.yaml#/500'
+
+components:
+  schemas:                
+    Message:
+      type: object
+      properties:
+        id: 
+          type: string
+        products: 
+          type: array
+          items: 
+            type: object
+            properties:
+              id:
+                type: string
+              ammount:
+                type: number
+        status:
+          type: string
+        deliveryDate:
+          type: string
+        user:
+          type: string

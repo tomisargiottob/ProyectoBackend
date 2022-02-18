@@ -4,6 +4,16 @@ info:
   version: 1.0.0
   description: An E-commerce store with Express
 paths:
+  /api/auth/login:
+    $ref: user.yaml#/login
+  /api/user:
+    $ref: user.yaml#/collection
+  /api/user/{id}:
+    $ref: user.yaml#/instance
+  /api/user/{id}/messages:
+    $ref: user.yaml#/messages
+  /api/user/{id}/orders:
+    $ref: user.yaml#/orders
   /api/products:
     $ref: products.yaml#/collection
   /api/products/{id}:
@@ -14,14 +24,20 @@ paths:
     $ref: cart.yaml#/instance
   /api/carts/{id}/products:
     $ref: cart.yaml#/cartproducts
-  /api/cart/{id}/products/{idProd}:
+  /api/carts/{id}/products/{idProd}:
     $ref: cart.yaml#/products    
+  /api/messages:
+    $ref: messages.yaml#/collection
+  /api/order:
+    $ref: orders.yaml#/collection
+
 
 components:
   securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
+    bearerAuth:
+      type: apiKey
+      name: auth-token
+      in: header
 
 security:
-  - BasicAuth: []
+  - bearerAuth: [] 

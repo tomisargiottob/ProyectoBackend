@@ -1,10 +1,19 @@
 collection:
   get:
+    tags:
+    - Product operations
     summary: Get all products
     operationId: getProducts
+    parameters:
+      - in: query
+        name: category
+        schema:
+          type: string
+        required: false
+        description: Category of products to be filtered
     responses:
       '200':
-        description: Found
+        description: Products Found
         content:
           application/json:
             schema:
@@ -16,6 +25,8 @@ collection:
       '500':
         $ref: './errors.yaml#/500'
   post:
+    tags:
+    - Product operations
     summary: Add a new product
     operationId: createProduct
     requestBody:
@@ -57,6 +68,8 @@ collection:
 
 instance:
   get:
+    tags:
+    - Product operations
     summary: Get one product
     operationId: getProduct
     parameters:
@@ -79,6 +92,8 @@ instance:
       '500':
         $ref: './errors.yaml#/500'
   put:
+    tags:
+    - Product operations
     summary: Modify one product
     operationId: updateProduct
     parameters:
@@ -125,6 +140,8 @@ instance:
       '500':
         $ref: './errors.yaml#/500'
   delete:
+    tags:
+    - Product operations
     summary: Delete one product
     operationId: deleteProduct
     parameters:
@@ -139,7 +156,10 @@ instance:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Product'
+              type: object
+              properties:
+                message:
+                  type: string
       '401':
         $ref: './errors.yaml#/401'
       '404':

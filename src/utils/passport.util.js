@@ -1,23 +1,16 @@
 const passport = require('passport');
 // const { Strategy } = require('passport-facebook');
 const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
 const UserDaoFactory = require('../services/user/user-factory');
 const CartDaoFactory = require('../services/cart/cart-factory');
 const sendEmail = require('./mailer');
 const logger = require('./logger');
+const { createHash, isValidPasword } = require('./crypto');
 
 const UserDao = UserDaoFactory.getDao();
 const CartDao = CartDaoFactory.getDao();
 
 const log = logger.child({ module: 'passport' });
-function isValidPasword(user, password) {
-  return bcrypt.compareSync(password, user.password);
-}
-
-function createHash(password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
-}
 
 passport.use('login', new LocalStrategy(
   {
@@ -46,7 +39,6 @@ passport.use('signup', new LocalStrategy({
   passReqToCallback: true,
   usernameField: 'email',
 }, async (req, username, password, done) => {
-  let createdCart = {};
   const { address, age, telephone } = req.body;
   try {
     const user = await UserDao.find({ username });

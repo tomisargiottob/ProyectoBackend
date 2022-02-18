@@ -3,7 +3,11 @@ const multer = require('multer');
 const {
   findUser,
   updateUser,
+  findUserOrders,
 } = require('../controllers/user.controller');
+const {
+  getMessages,
+} = require('../controllers/message.controller');
 const checkAuthenticated = require('../middleware/auth.middleware');
 
 const storage = multer.diskStorage({
@@ -19,6 +23,8 @@ const upload = multer({ storage });
 const userRouter = new Router();
 
 userRouter.get('/:id', checkAuthenticated, findUser);
-userRouter.put('/:id', checkAuthenticated, upload.single('avatar'), updateUser);
+userRouter.patch('/:id', checkAuthenticated, upload.single('avatar'), updateUser);
+userRouter.get('/:id/orders', checkAuthenticated, findUserOrders);
+userRouter.get('/:id/messages', checkAuthenticated, getMessages);
 
 module.exports = { userRouter };

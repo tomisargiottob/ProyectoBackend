@@ -7,6 +7,7 @@ function normalizeProducts(products) {
       price: product.price,
       thumbnail: product.thumbnail,
       description: product.description,
+      category: product.category,
       code: product.code,
       stock: product.stock,
     }));
@@ -17,6 +18,7 @@ function normalizeProducts(products) {
       price: products.price,
       thumbnail: products.thumbnail,
       description: products.description,
+      category: products.category,
       code: products.code,
       stock: products.stock,
     };

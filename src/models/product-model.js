@@ -21,6 +21,9 @@ const Schema = mongoose.Schema({
   thumbnail: {
     type: String,
   },
+  category: {
+    type: String,
+  },
   price: {
     type: Number,
     default: 0,

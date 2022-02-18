@@ -55,6 +55,7 @@ class ProductDaoMemory extends ProductDao {
       price: data.price,
       thumbnail: data.thumbnail,
       description: data.description,
+      category: data.category,
       code: data.code,
       stock: data.stock,
     };

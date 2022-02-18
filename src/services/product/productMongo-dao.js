@@ -6,8 +6,8 @@ const returnProducts = require('./product-dto');
 let instance;
 
 class ProductDaoMongo extends ProductDao {
-  async getAll() {
-    const productsMongo = await ProductModel.find();
+  async getAll(where) {
+    const productsMongo = await ProductModel.find(where);
     const products = returnProducts(productsMongo);
     return products;
   }
@@ -28,7 +28,7 @@ class ProductDaoMongo extends ProductDao {
   async update(id, data) {
     // eslint-disable-next-line no-param-reassign
     data.id = id;
-    const product = await ProductModel.findOneAndUpdate(id, data, { new: true });
+    const product = await ProductModel.findOneAndUpdate({ id }, data, { new: true });
     if (product) {
       return returnProducts(product);
     }
@@ -40,6 +40,10 @@ class ProductDaoMongo extends ProductDao {
   }
 
   async create(data) {
+    if (data.id) {
+      // eslint-disable-next-line no-param-reassign
+      delete data.id;
+    }
     const product = await ProductModel.create(data);
     return returnProducts(product);
   }
