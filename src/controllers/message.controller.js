@@ -12,7 +12,6 @@ async function getMessages(req, res) {
   }
   try {
     log.info('Searching all messages');
-    console.log(where);
     const allMessages = await MessageDao.getAll(where);
     res.status(200).send(allMessages);
     log.info('All messages sent');

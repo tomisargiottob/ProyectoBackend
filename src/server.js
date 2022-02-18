@@ -16,6 +16,7 @@ const socketManager = require('./utils/websocketManager');
 const { productRouter } = require('./routers/products.route');
 const { cartRouter } = require('./routers/carts.route');
 const { userRouter } = require('./routers/users.route');
+const { orderRouter } = require('./routers/orders.route');
 const { messageRouter } = require('./routers/messages.route');
 const { router } = require('./routers/auth.route');
 // const checkFrontAuthenticated = require('./middleware/authFront.middleware');
@@ -50,6 +51,7 @@ async function initializeApp() {
   app.use('/api/messages', messageRouter);
   app.use('/api/carts', cartRouter);
   app.use('/api/user', userRouter);
+  app.use('/api/order', orderRouter);
   app.use('/', router);
   app.get('/chat', (req, res) => {
     res.sendFile(path.join(__dirname, '/files/websocket.html'));
