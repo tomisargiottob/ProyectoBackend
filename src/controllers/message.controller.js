@@ -8,7 +8,7 @@ async function getMessages(req, res) {
   const where = {};
   const { id } = req.params;
   if (id) {
-    where.id = id;
+    where.user = id;
   }
   try {
     if (req.user.role !== 'admin' && !id) {

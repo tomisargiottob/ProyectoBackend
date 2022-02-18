@@ -6,8 +6,8 @@ const returnMessages = require('./message-dto');
 let instance;
 
 class MessageDaoMongo extends MessageDao {
-  async getAll() {
-    const messagesMongo = await MessageModel.find();
+  async getAll(where) {
+    const messagesMongo = await MessageModel.find(where);
     const messages = returnMessages(messagesMongo);
     return messages;
   }
