@@ -1,4 +1,3 @@
-const config = require('config');
 const pino = require('pino');
 
 const formatters = {
@@ -13,7 +12,7 @@ const formatters = {
 const logger = pino({
   timestamp: () => `,"time":"${new Date(Date.now()).toISOString()}"`,
   formatters,
-  level: (config.logger && config.logger.level) || 'debug',
+  level: process.env.LOGGERLEVEL || 'debug',
 });
 
 module.exports = logger;
