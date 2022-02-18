@@ -18,7 +18,6 @@ const { cartRouter } = require('./routers/carts.route');
 const { userRouter } = require('./routers/users.route');
 const { messageRouter } = require('./routers/messages.route');
 const { router } = require('./routers/auth.route');
-const checkAuthenticated = require('./middleware/auth.middleware');
 
 const nCpus = os.cpus().length;
 const args = minimist(process.argv.slice(2), {
