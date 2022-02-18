@@ -6,16 +6,16 @@ const returnUsers = require('./user-dto');
 let instance;
 
 class UserDaoMongo extends UserDao {
-  async getAll() {
-    const usersMongo = await UserModel.find();
+  async getAll(where) {
+    const usersMongo = await UserModel.find(where);
     const users = returnUsers(usersMongo);
     return users;
   }
 
-  async find(where) {
+  async find() {
     let user;
     try {
-      user = await UserModel.findOne(where);
+      user = await UserModel.findOne();
       if (user) {
         return returnUsers(user);
       }
