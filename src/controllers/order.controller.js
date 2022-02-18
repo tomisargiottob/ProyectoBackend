@@ -12,7 +12,7 @@ async function getOrders(req, res) {
   }
   try {
     if (req.user.role !== 'admin') {
-      res.status(401).send({ message: 'Unauthorized request to delete cart' });
+      res.status(401).send({ message: 'Unauthorized request to get all orders' });
     }
     log.info('Searching all orders');
     const allOrders = await OrderDao.getAll();

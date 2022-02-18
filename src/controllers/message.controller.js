@@ -11,6 +11,9 @@ async function getMessages(req, res) {
     where.id = id;
   }
   try {
+    if (req.user.role !== 'admin' && !id) {
+      res.status(401).send({ message: 'Unauthorized request to get all messages' });
+    }
     log.info('Searching all messages');
     const allMessages = await MessageDao.getAll(where);
     res.status(200).send(allMessages);
